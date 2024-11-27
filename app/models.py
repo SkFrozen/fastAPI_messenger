@@ -12,11 +12,11 @@ class User(BaseModel):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(String(150), nullable=False)
+    username: Mapped[str] = mapped_column(String(150), nullable=False, unique=True)
     password: Mapped[str] = mapped_column(String(128))
 
-    first_name: Mapped[str] = mapped_column(String(150))
-    last_name: Mapped[str] = mapped_column(String(150))
+    first_name: Mapped[str] = mapped_column(String(150), nullable=True)
+    last_name: Mapped[str] = mapped_column(String(150), nullable=True)
     email: Mapped[str] = mapped_column(String(254), nullable=False)
     is_active: Mapped[bool] = mapped_column(server_default=false())
     is_staff: Mapped[bool] = mapped_column(server_default=false())

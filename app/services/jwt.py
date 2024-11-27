@@ -10,17 +10,11 @@ from app.settings import (
     SECRET_KEY,
 )
 
+from .auth import InvalidTokenError
+
 auth_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/")
 ALGORITHM = "HS256"
 USER_IDENTIFIER = "user_id"
-
-
-class AuthError(Exception):
-    pass
-
-
-class InvalidTokenError(AuthError):
-    pass
 
 
 def create_token_pair(user_id: int) -> TokenPairSchema:

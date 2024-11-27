@@ -4,4 +4,4 @@ from app.handlers import router
 
 app = FastAPI()
 
-app.include_router(router, prefix="/api/v1/auth/token")
+app.include_router(router, prefix="/api/v1")
