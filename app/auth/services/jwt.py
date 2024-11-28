@@ -3,18 +3,17 @@ from datetime import UTC, datetime, timedelta
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 
-from app.schemas import TokenPairSchema
-from app.settings import (
-    ACCESS_TOKEN_EXPIRE_MINUTES,
-    REFRESH_TOKEN_EXPIRE_HOURS,
-    SECRET_KEY,
-)
+from app.auth.schemas import AccessTokenSchema, TokenPairSchema
+from app.settings import settings
 
-from .auth import InvalidTokenError
+from .ext import InvalidTokenError
 
 auth_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/")
 ALGORITHM = "HS256"
 USER_IDENTIFIER = "user_id"
+ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
+REFRESH_TOKEN_EXPIRE_HOURS = settings.REFRESH_TOKEN_EXPIRE_HOURS
+SECRET_KEY = settings.SECRET_KEY
 
 
 def create_token_pair(user_id: int) -> TokenPairSchema:
@@ -37,6 +36,18 @@ def _create_jwt(payload: dict, delta: timedelta):
     expire = datetime.now(UTC) + delta
     payload.update({"exp": expire})
     return jwt.encode(payload, key=SECRET_KEY, algorithm=ALGORITHM)
+
+
+def refresh_token(refresh_token: str):
+    try:
+        payload = jwt.decode(refresh_token, key=SECRET_KEY, algorithms=[ALGORITHM])
+    except JWTError:
+        raise InvalidTokenError("Invalid refresh token")
+    if payload["type"] != "refresh":
+        raise InvalidTokenError("Invalid token type")
+    return AccessTokenSchema(
+        access_token=create_token(payload["user_id"], type_="access")
+    )
 
 
 def _get_user_from_token(token: str) -> int:

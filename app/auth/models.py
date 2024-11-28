@@ -1,11 +1,10 @@
 from datetime import datetime
-from unittest.mock import Base
 
 from sqlalchemy import String, func
 from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy.sql.expression import false
+from sqlalchemy.sql.expression import false, true
 
-from .orm.base_model import BaseModel
+from ..orm.base_model import BaseModel
 
 
 class User(BaseModel):
@@ -18,7 +17,7 @@ class User(BaseModel):
     first_name: Mapped[str] = mapped_column(String(150), nullable=True)
     last_name: Mapped[str] = mapped_column(String(150), nullable=True)
     email: Mapped[str] = mapped_column(String(254), nullable=False)
-    is_active: Mapped[bool] = mapped_column(server_default=false())
+    is_active: Mapped[bool] = mapped_column(server_default=true())
     is_staff: Mapped[bool] = mapped_column(server_default=false())
     is_superuser: Mapped[bool] = mapped_column(server_default=false())
 

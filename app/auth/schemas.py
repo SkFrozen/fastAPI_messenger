@@ -11,6 +11,14 @@ class TokenPairSchema(BaseModel):
     refresh_token: str
 
 
+class AccessTokenSchema(BaseModel):
+    access_token: str
+
+
+class UpdateAccessTokenSchema(BaseModel):
+    refresh_token: str
+
+
 class UserCreateSchema(BaseModel):
     username: str = Field(..., max_length=150)
     email: str = Field(..., max_length=150)
