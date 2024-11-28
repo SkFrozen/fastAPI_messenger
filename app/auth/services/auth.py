@@ -30,7 +30,7 @@ async def get_user(
     user_id = _get_user_from_token(token)
     query = select(User).where(User.id == user_id)
     try:
-        user = await session.execute(query).scalar_one()
+        user = (await session.execute(query)).scalar_one()
     except NoResultFound:
         raise InvalidCredentialsError("User not found")
 

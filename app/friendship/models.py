@@ -6,7 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from app.orm.base_model import BaseModel
 
 
-class FriendShip(BaseModel):
+class Friendship(BaseModel):
     __tablename__ = "friendship"
     __table_args__ = (UniqueConstraint("user_id", "friend_id"),)
 
