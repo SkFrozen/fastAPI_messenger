@@ -7,7 +7,8 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from app.auth.models import User
-from app.friendship.models import FriendShip
+from app.chats.models import Message
+from app.friendship.models import Friendship
 from app.settings import settings
 
 # this is the Alembic Config object, which provides

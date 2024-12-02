@@ -6,7 +6,7 @@ from jose import JWTError, jwt
 from app.auth.schemas import AccessTokenSchema, TokenPairSchema
 from app.settings import settings
 
-from .ext import InvalidTokenError
+from .exc import InvalidTokenError
 
 auth_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/")
 ALGORITHM = "HS256"

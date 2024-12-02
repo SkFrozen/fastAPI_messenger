@@ -8,7 +8,7 @@ from app.auth.schemas import (
     UserCreateSchema,
     UserCredentialsSchema,
 )
-from app.auth.services.ext import (
+from app.auth.services.exc import (
     InvalidCredentialsError,
     InvalidTokenError,
     UserAlreadyExist,

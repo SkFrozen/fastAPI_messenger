@@ -1,11 +1,19 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 
 from app.auth.services.auth import get_user
+from app.auth.services.exc import UserDoesNotExist
 from app.orm.session import get_session
 
-from .schemas import FriendshipEntitySchema, NewFriendshipEntitySchema
+from .schemas import (
+    DeleteFriendshipEntitySchema,
+    FriendshipEntitySchema,
+    NewFriendshipEntitySchema,
+    SuccessMessage,
+)
 from .services import (
+    FriendshipNotFoundError,
     create_friendship_entity,
+    delete_friendship_entity,
     get_user_friends,
     search_friendship_entities,
 )
@@ -36,3 +44,16 @@ async def create_friendship_api_view(
     session=Depends(get_session),
 ):
     return await create_friendship_entity(session, user.id, friend_data.username)
+
+
+@router.delete("/delete", response_model=SuccessMessage)
+async def delete_friendship_api_view(
+    friend_data: DeleteFriendshipEntitySchema,
+    user=Depends(get_user),
+    session=Depends(get_session),
+):
+    try:
+        await delete_friendship_entity(session, user.id, friend_data.username)
+    except (FriendshipNotFoundError, UserDoesNotExist) as exc:
+        raise HTTPException(status_code=404, detail=str(exc))
+    return SuccessMessage(message="Friendship deleted successfully")

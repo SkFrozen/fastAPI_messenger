@@ -3,6 +3,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.auth.models import User
+from app.auth.services.exc import UserDoesNotExist
 from app.friendship.models import Friendship
 from app.friendship.schemas import FriendshipEntitySchema
 
@@ -83,3 +84,27 @@ async def create_friendship_entity(
         pass
 
     return friendship_schema
+
+
+async def delete_friendship_entity(
+    session: AsyncSession, user_id: int, friend_username: str
+) -> None:
+    friend_id = (
+        await session.execute(select(User.id).where(User.username == friend_username))
+    ).scalar_one_or_none()
+
+    if friend_id is None:
+        raise UserDoesNotExist("Friend not found")
+
+    friendship = (
+        await session.execute(
+            select(Friendship).where(
+                Friendship.user_id == user_id, Friendship.friend_id == friend_id
+            )
+        )
+    ).scalar_one_or_none()
+    if friendship is None:
+        raise FriendshipNotFoundError("Friendship not found")
+
+    await session.delete(friendship)
+    await session.commit()

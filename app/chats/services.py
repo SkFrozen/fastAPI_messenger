@@ -1,4 +1,5 @@
-from sqlalchemy import select
+from sqlalchemy import delete, select, update
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.expression import and_, or_
 
@@ -17,9 +18,7 @@ async def create_message(
     recipient_id: int,
     message: str,
 ) -> Message:
-    recipient = await session.get(
-        User,
-    )
+
     message = Message(sender_id=sender_id, recipient_id=recipient_id, message=message)
     session.add(message)
     await session.commit()
@@ -52,3 +51,35 @@ async def get_last_messages(
     )
     result = list((await session.execute(query)).scalars())
     return result
+
+
+async def update_message(
+    session: AsyncSession, chat_id: int, message_id: int, message: str
+):
+    query = (
+        update(Message)
+        .where(
+            Message.id == message_id,
+            Message.recipient_id == chat_id,
+        )
+        .values(
+            message=message,
+        )
+    )
+    await session.execute(query)
+    try:
+        await session.commit()
+    except IntegrityError:
+        raise ChatError("Message not found")
+
+
+async def delete_message(session: AsyncSession, chat_id: int, message_id: int):
+    query = delete(Message).where(
+        Message.id == message_id,
+        Message.recipient_id == chat_id,
+    )
+    await session.execute(query)
+    try:
+        await session.commit()
+    except IntegrityError:
+        raise ChatError("Message not found")

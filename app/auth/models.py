@@ -11,7 +11,9 @@ class User(BaseModel):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    username: Mapped[str] = mapped_column(String(150), nullable=False, unique=True)
+    username: Mapped[str] = mapped_column(
+        String(150), nullable=False, unique=True, index=True
+    )
     password: Mapped[str] = mapped_column(String(128))
 
     first_name: Mapped[str] = mapped_column(String(150), nullable=True)

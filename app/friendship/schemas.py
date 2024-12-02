@@ -13,3 +13,11 @@ class FriendshipEntitySchema(BaseModel):
 
 class NewFriendshipEntitySchema(BaseModel):
     username: str
+
+
+class DeleteFriendshipEntitySchema(BaseModel):
+    username: str
+
+
+class SuccessMessage(BaseModel):
+    message: str

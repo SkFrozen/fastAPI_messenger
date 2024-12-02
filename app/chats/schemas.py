@@ -13,3 +13,12 @@ class MessageSchema(BaseModel):
     recipient_id: int
     message: str
     created_at: datetime
+
+
+class UpdateMessageSchema(BaseModel):
+    id: int
+    message: str
+
+
+class DeleteMessageSchema(BaseModel):
+    id: int

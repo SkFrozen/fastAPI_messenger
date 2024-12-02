@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.auth.models import User
 from app.orm.session import get_session
 
-from .ext import InvalidCredentialsError, UserAlreadyExist
+from .exc import InvalidCredentialsError, UserAlreadyExist
 from .jwt import _get_user_from_token, auth_scheme
 from .tools import check_email, check_password, encrypt_password
 
