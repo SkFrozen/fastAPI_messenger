@@ -25,7 +25,7 @@ async def search_friendships(
     search: str = Query("", min_length=3, max_length=50),
     _=Depends(get_user),
     session=Depends(get_session),
-) -> list[FriendshipEntitySchema]:
+):
     return await search_friendship_entities(session, search)
 
 

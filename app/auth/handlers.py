@@ -24,7 +24,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 @router.post("/token", response_model=TokenPairSchema)
 async def create_token_api_view(
     user_data: UserCredentialsSchema, session=Depends(get_session)
-) -> TokenPairSchema:
+):
     try:
         user = await get_user_by_credentials(
             session, user_data.username, user_data.password
@@ -38,7 +38,7 @@ async def create_token_api_view(
 @router.post("/token/refresh", response_model=AccessTokenSchema)
 async def refresh_token_api_view(
     user_data: UpdateAccessTokenSchema,
-) -> AccessTokenSchema:
+):
     try:
         access_token: AccessTokenSchema = refresh_token(user_data.refresh_token)
     except InvalidTokenError as exc:
@@ -50,7 +50,7 @@ async def refresh_token_api_view(
 @router.post("/registration", response_model=UserCreateResponseSchema)
 async def registration_user_api_view(
     user_data: UserCreateSchema, session=Depends(get_session)
-) -> UserCreateResponseSchema:
+):
     try:
         user = await create_user(
             session=session,
