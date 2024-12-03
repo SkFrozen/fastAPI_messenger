@@ -65,12 +65,14 @@ async def update_message(
         .values(
             message=message,
         )
+        .returning(Message.message)
     )
-    await session.execute(query)
-    try:
-        await session.commit()
-    except IntegrityError:
+    message = (await session.execute(query)).scalar()
+
+    if message is None:
         raise ChatError("Message not found")
+
+    await session.commit()
 
 
 async def delete_message(session: AsyncSession, chat_id: int, message_id: int):
