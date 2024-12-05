@@ -17,7 +17,7 @@ from .services import (
     update_message,
 )
 
-router = APIRouter(prefix="/{chat_id}/sendMessage", tags=["chats"])
+router = APIRouter(prefix="/{chat_id}/messages", tags=["chats"])
 
 
 @router.post("", response_model=MessageSchema)
@@ -48,7 +48,7 @@ async def get_last_messages_api_view(
         raise HTTPException(status_code=400, detail=str(exc))
 
 
-@router.patch("/update", response_model=NewMessageSchema)
+@router.patch("", response_model=NewMessageSchema)
 async def update_message_api_view(
     chat_id: int,
     message_data: UpdateMessageSchema,
@@ -66,7 +66,7 @@ async def update_message_api_view(
     return NewMessageSchema(message=f"Message with id {message_data.id} updated")
 
 
-@router.delete("/delete", response_model=NewMessageSchema)
+@router.delete("", response_model=NewMessageSchema)
 async def delete_message_api_view(
     chat_id: int,
     message_data: DeleteMessageSchema,

@@ -8,11 +8,7 @@ from app.auth.schemas import (
     UserCreateSchema,
     UserCredentialsSchema,
 )
-from app.auth.services.exc import (
-    InvalidCredentialsError,
-    InvalidTokenError,
-    UserAlreadyExist,
-)
+from app.auth.services.exc import AuthError
 from app.orm.session import get_session
 
 from .services.auth import create_user, get_user_by_credentials
@@ -29,7 +25,7 @@ async def create_token_api_view(
         user = await get_user_by_credentials(
             session, user_data.username, user_data.password
         )
-    except InvalidCredentialsError as exc:
+    except AuthError as exc:
         raise HTTPException(status_code=400, detail=str(exc))
 
     return create_token_pair(user.id)
@@ -41,7 +37,7 @@ async def refresh_token_api_view(
 ):
     try:
         access_token: AccessTokenSchema = refresh_token(user_data.refresh_token)
-    except InvalidTokenError as exc:
+    except AuthError as exc:
         raise HTTPException(status_code=400, detail=str(exc))
 
     return access_token
@@ -58,7 +54,7 @@ async def registration_user_api_view(
             password=user_data.password,
             email=user_data.email,
         )
-    except UserAlreadyExist as exc:
+    except AuthError as exc:
         raise HTTPException(status_code=400, detail=str(exc))
 
     return UserCreateResponseSchema(username=user.username, email=user.email)

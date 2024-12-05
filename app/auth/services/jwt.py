@@ -11,9 +11,9 @@ from .exc import InvalidTokenError
 auth_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/")
 ALGORITHM = "HS256"
 USER_IDENTIFIER = "user_id"
-ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
-REFRESH_TOKEN_EXPIRE_HOURS = settings.REFRESH_TOKEN_EXPIRE_HOURS
-SECRET_KEY = settings.SECRET_KEY
+ACCESS_TOKEN_EXPIRE_MINUTES = settings.access_token_expire_minutes
+REFRESH_TOKEN_EXPIRE_HOURS = settings.refresh_token_expire_hours
+SECRET_KEY = settings.secret_key
 
 
 def create_token_pair(user_id: int) -> TokenPairSchema:

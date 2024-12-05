@@ -1,4 +1,4 @@
-from fastapi import Depends
+from fastapi import Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.auth.models import User
 from app.orm.session import get_session
 
-from .exc import InvalidCredentialsError, UserAlreadyExist
+from .exc import AuthError, InvalidCredentialsError, UserAlreadyExist
 from .jwt import _get_user_from_token, auth_scheme
 from .tools import check_email, check_password, encrypt_password
 
@@ -27,12 +27,16 @@ async def get_user_by_credentials(
 async def get_user(
     token: str = Depends(auth_scheme), session: AsyncSession = Depends(get_session)
 ) -> User:
-    user_id = _get_user_from_token(token)
+    try:
+        user_id = _get_user_from_token(token)
+    except AuthError as exc:
+        raise HTTPException(status_code=401, detail=str(exc))
+
     query = select(User).where(User.id == user_id)
     try:
         user = (await session.execute(query)).scalar_one()
     except NoResultFound:
-        raise InvalidCredentialsError("User not found")
+        raise HTTPException(status_code=404, detail="Пользователь не найден")
 
     return user
 

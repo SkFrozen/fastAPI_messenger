@@ -5,7 +5,7 @@ from Crypto.Util.Padding import pad
 
 from app.settings import settings
 
-key = settings.SECRET_KEY[:16].encode("utf-8")
+key = settings.secret_key[:16].encode("utf-8")
 aes = AES.new(key, AES.MODE_ECB)
 
 
